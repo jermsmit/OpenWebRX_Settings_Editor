@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenWebRX Settings Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+    <div class="brand-text">
+      <span class="brand-title">OWRX</span>
+      <span class="brand-sub">Settings Editor</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">FILE</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" onclick="showSection('dashboard', this)">
+      <i class="fa fa-gauge-high"></i><span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-item" onclick="triggerImport()">
+      <i class="fa fa-file-import"></i><span>Import JSON</span>
+    </a>
+    <a href="#" class="nav-item" onclick="newSettings()">
+      <i class="fa fa-file-circle-plus"></i><span>New Settings</span>
+    </a>
+    <a href="#" class="nav-item" onclick="exportSettings()">
+      <i class="fa fa-file-export"></i><span>Export JSON</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">CONFIGURE</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item" onclick="showSection('global', this)">
+      <i class="fa fa-sliders"></i><span>Global Settings</span>
+    </a>
+    <a href="#" class="nav-item" onclick="showSection('devices', this)">
+      <i class="fa fa-microchip"></i><span>SDR Devices</span>
+      <span class="badge" id="sdr-count">0</span>
+    </a>
+    <a href="#" class="nav-item" onclick="showSection('profiles', this)">
+      <i class="fa fa-list-radio"></i><span>Profiles</span>
+      <span class="badge" id="profile-count">0</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">TOOLS</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item" onclick="showSection('validate', this)">
+      <i class="fa fa-circle-check"></i><span>Validate</span>
+    </a>
+    <a href="#" class="nav-item" onclick="showSection('rawjson', this)">
+      <i class="fa fa-code"></i><span>Raw JSON</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="version-tag">v1.0.0</span>
+    <span class="footer-label">OpenWebRX v8</span>
+  </div>
+</aside>
+
+<!-- ── Top bar ─────────────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+  <div class="topbar-title" id="topbar-title">Dashboard</div>
+  <div class="topbar-actions">
+    <button class="btn btn-sm btn-danger" onclick="exportSettings()">
+      <i class="fa fa-download"></i> Export
+    </button>
+  </div>
+</div>
+
+<!-- ── Main content ────────────────────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- Hidden file input -->
+  <input type="file" id="file-import" accept=".json" style="display:none" onchange="handleImport(this)" />
+
+  <!-- ── Dashboard ── -->
+  <section id="section-dashboard" class="section active">
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p class="page-sub">Overview of your current settings file</p>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-icon red"><i class="fa fa-microchip"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-sdrs">0</div>
+          <div class="stat-label">SDR Devices</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa fa-list-radio"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-profiles">0</div>
+          <div class="stat-label">Profiles</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fa fa-file-code"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-version">—</div>
+          <div class="stat-label">Schema Version</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange"><i class="fa fa-weight-hanging"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-size">0 B</div>
+          <div class="stat-label">File Size</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header">
+        <i class="fa fa-microchip"></i> SDR Device Summary
+        <button class="btn btn-sm btn-red ml-auto" onclick="showSection('devices', null); document.querySelector('[onclick=\"showSection(\'devices\', this)\"]').classList.add('active')">
+          <i class="fa fa-plus"></i> Add Device
+        </button>
+      </div>
+      <div class="card-body" id="dashboard-sdr-list">
+        <div class="empty-state">
+          <i class="fa fa-tower-broadcast"></i>
+          <p>No devices configured. <a href="#" onclick="newSettings()">Start fresh</a> or <a href="#" onclick="triggerImport()">import a file</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header"><i class="fa fa-clock-rotate-left"></i> Quick Actions</div>
+      <div class="card-body">
+        <div class="quick-actions">
+          <button class="qbtn" onclick="newSettings()"><i class="fa fa-file-circle-plus"></i>New Settings</button>
+          <button class="qbtn" onclick="triggerImport()"><i class="fa fa-file-import"></i>Import JSON</button>
+          <button class="qbtn" onclick="exportSettings()"><i class="fa fa-file-export"></i>Export JSON</button>
+          <button class="qbtn" onclick="showSection('validate', null)"><i class="fa fa-circle-check"></i>Validate</button>
+          <button class="qbtn" onclick="showSection('rawjson', null)"><i class="fa fa-code"></i>View Raw JSON</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Global Settings ── -->
+  <section id="section-global" class="section">
+    <div class="page-header">
+      <h1>Global Settings</h1>
+      <p class="page-sub">Top-level settings applied to the whole configuration</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><i class="fa fa-sliders"></i> File Properties</div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Schema Version</label>
+            <input type="number" id="g-version" class="form-control" value="8" min="1" onchange="updateGlobal()" />
+            <span class="form-hint">OpenWebRX settings schema version (default: 8)</span>
+          </div>
+          <div class="form-group">
+            <label>Receiver Name</label>
+            <input type="text" id="g-receiver_name" class="form-control" placeholder="My OpenWebRX" onchange="updateGlobal()" />
+            <span class="form-hint">Shown in the web UI title bar</span>
+          </div>
+          <div class="form-group">
+            <label>Receiver Location</label>
+            <input type="text" id="g-receiver_location" class="form-control" placeholder="City, State" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Receiver Latitude</label>
+            <input type="number" id="g-receiver_gps_lat" class="form-control" placeholder="40.7128" step="0.0001" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Receiver Longitude</label>
+            <input type="number" id="g-receiver_gps_lon" class="form-control" placeholder="-74.0060" step="0.0001" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Receiver Altitude (m)</label>
+            <input type="number" id="g-receiver_altitude" class="form-control" placeholder="0" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Admin Email</label>
+            <input type="email" id="g-receiver_admin" class="form-control" placeholder="admin@example.com" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Waterfall Max Level (dB)</label>
+            <input type="number" id="g-waterfall_max_level" class="form-control" placeholder="-30" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Waterfall Min Level (dB)</label>
+            <input type="number" id="g-waterfall_min_level" class="form-control" placeholder="-120" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Max Clients</label>
+            <input type="number" id="g-max_clients" class="form-control" placeholder="20" min="1" onchange="updateGlobal()" />
+          </div>
+          <div class="form-group">
+            <label>Audio Compression</label>
+            <select id="g-audio_compression" class="form-control" onchange="updateGlobal()">
+              <option value="">— not set —</option>
+              <option value="adpcm">ADPCM</option>
+              <option value="none">None (PCM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>FFT Size</label>
+            <select id="g-fft_size" class="form-control" onchange="updateGlobal()">
+              <option value="">— not set —</option>
+              <option value="512">512</option>
+              <option value="1024">1024</option>
+              <option value="2048">2048</option>
+              <option value="4096">4096</option>
+              <option value="8192">8192</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions mt-3">
+          <button class="btn btn-red" onclick="updateGlobal(); toast('Global settings saved')">
+            <i class="fa fa-save"></i> Apply Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SDR Devices ── -->
+  <section id="section-devices" class="section">
+    <div class="page-header">
+      <h1>SDR Devices</h1>
+      <p class="page-sub">Manage physical SDR hardware entries</p>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-red" onclick="openDeviceModal()">
+        <i class="fa fa-plus"></i> Add Device
+      </button>
+    </div>
+    <div id="devices-list" class="card-list mt-3"></div>
+  </section>
+
+  <!-- ── Profiles ── -->
+  <section id="section-profiles" class="section">
+    <div class="page-header">
+      <h1>Profiles</h1>
+      <p class="page-sub">Band profiles across all SDR devices</p>
+    </div>
+    <div class="toolbar">
+      <select id="profile-filter-sdr" class="form-control sm" onchange="renderProfiles()">
+        <option value="">All Devices</option>
+      </select>
+      <input type="text" id="profile-search" class="form-control sm" placeholder="Search profiles..." oninput="renderProfiles()" />
+      <button class="btn btn-red ml-auto" onclick="openProfileModal()">
+        <i class="fa fa-plus"></i> Add Profile
+      </button>
+    </div>
+    <div id="profiles-list" class="card-list mt-3"></div>
+  </section>
+
+  <!-- ── Validate ── -->
+  <section id="section-validate" class="section">
+    <div class="page-header">
+      <h1>Validate</h1>
+      <p class="page-sub">Check your settings for errors and warnings</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><i class="fa fa-circle-check"></i> Validation Results</div>
+      <div class="card-body">
+        <button class="btn btn-red mb-3" onclick="runValidation()">
+          <i class="fa fa-play"></i> Run Validation
+        </button>
+        <div id="validation-results">
+          <div class="empty-state"><i class="fa fa-circle-question"></i><p>Click Run Validation to check your settings.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Raw JSON ── -->
+  <section id="section-rawjson" class="section">
+    <div class="page-header">
+      <h1>Raw JSON</h1>
+      <p class="page-sub">View and directly edit the raw settings JSON</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-code"></i> settings.json
+        <div class="ml-auto" style="display:flex;gap:.5rem">
+          <button class="btn btn-sm btn-ghost" onclick="copyRaw()"><i class="fa fa-copy"></i> Copy</button>
+          <button class="btn btn-sm btn-red" onclick="applyRaw()"><i class="fa fa-upload"></i> Apply</button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <textarea id="raw-json" class="raw-editor" spellcheck="false" oninput="rawDirty=true"></textarea>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- Device Modal -->
+<div class="modal-overlay" id="modal-device" onclick="closeModalClick(event,'modal-device')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="device-modal-title">Add SDR Device</h2>
+      <button class="modal-close" onclick="closeModal('modal-device')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="d-editing-id" />
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Device ID <span class="req">*</span></label>
+          <input type="text" id="d-id" class="form-control" placeholder="rtlsdr_v4" />
+          <span class="form-hint">Unique key in the sdrs object</span>
+        </div>
+        <div class="form-group span2">
+          <label>Display Name <span class="req">*</span></label>
+          <input type="text" id="d-name" class="form-control" placeholder="RTL-SDR Blog V4" />
+        </div>
+        <div class="form-group">
+          <label>Type <span class="req">*</span></label>
+          <select id="d-type" class="form-control">
+            {% for t in sdr_types %}
+            <option value="{{ t }}">{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Device Index</label>
+          <input type="number" id="d-device_index" class="form-control" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>RF Gain</label>
+          <input type="text" id="d-rf_gain" class="form-control" placeholder="35 or auto" />
+          <span class="form-hint">Number (dB) or "auto"</span>
+        </div>
+        <div class="form-group">
+          <label>PPM Correction</label>
+          <input type="number" id="d-ppm" class="form-control" value="0" />
+        </div>
+        <div class="form-group span2">
+          <label>Serial Number / Device String</label>
+          <input type="text" id="d-device" class="form-control" placeholder="Leave blank for first device" />
+        </div>
+        <div class="form-group span2">
+          <label>Driver (SoapySDR)</label>
+          <input type="text" id="d-driver" class="form-control" placeholder="e.g. rtlsdr (SoapySDR only)" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-device')">Cancel</button>
+      <button class="btn btn-red" onclick="saveDevice()"><i class="fa fa-save"></i> Save Device</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="modal-profile" onclick="closeModalClick(event,'modal-profile')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <h2 id="profile-modal-title">Add Profile</h2>
+      <button class="modal-close" onclick="closeModal('modal-profile')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="p-editing-id" />
+      <input type="hidden" id="p-sdr-id" />
+      <div class="form-grid">
+        <div class="form-group">
+          <label>SDR Device <span class="req">*</span></label>
+          <select id="p-sdr-select" class="form-control" onchange="document.getElementById('p-sdr-id').value=this.value"></select>
+        </div>
+        <div class="form-group">
+          <label>Profile ID <span class="req">*</span></label>
+          <input type="text" id="p-id" class="form-control" placeholder="2m_amateur" />
+          <span class="form-hint">Unique key within the device</span>
+        </div>
+        <div class="form-group span2">
+          <label>Profile Name <span class="req">*</span></label>
+          <input type="text" id="p-name" class="form-control" placeholder="2m Amateur (144–148 MHz)" />
+        </div>
+        <div class="form-group">
+          <label>Center Frequency (Hz) <span class="req">*</span></label>
+          <input type="number" id="p-center_freq" class="form-control" placeholder="146000000" />
+        </div>
+        <div class="form-group">
+          <label>Start Frequency (Hz)</label>
+          <input type="number" id="p-start_freq" class="form-control" placeholder="146520000" />
+        </div>
+        <div class="form-group">
+          <label>Sample Rate (Hz) <span class="req">*</span></label>
+          <input type="number" id="p-samp_rate" class="form-control" placeholder="2400000" />
+          <span class="form-hint">Max stable: 2400000</span>
+        </div>
+        <div class="form-group">
+          <label>Start Modulation</label>
+          <select id="p-start_mod" class="form-control">
+            <option value="">— not set —</option>
+            {% for m in modulations %}
+            <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>RF Gain Override</label>
+          <input type="text" id="p-rf_gain" class="form-control" placeholder="Inherit from device" />
+          <span class="form-hint">Number or "auto" — leave blank to inherit</span>
+        </div>
+        <div class="form-group">
+          <label>Tuning Step (Hz)</label>
+          <input type="number" id="p-tuning_step" class="form-control" placeholder="5000" />
+        </div>
+        <div class="form-group">
+          <label>Initial Squelch Level (dB)</label>
+          <input type="number" id="p-initial_squelch_level" class="form-control" placeholder="Leave blank for none" />
+        </div>
+        <div class="form-group">
+          <label>Direct Sampling</label>
+          <select id="p-direct_sampling" class="form-control">
+            <option value="">— disabled (default / V4) —</option>
+            <option value="0">0 — Off</option>
+            <option value="1">1 — I-branch (V3 HF)</option>
+            <option value="2">2 — Q-branch (V3 HF preferred)</option>
+          </select>
+          <span class="form-hint">Leave disabled for RTL-SDR V4</span>
+        </div>
+        <div class="form-group">
+          <label>Offset Tuning</label>
+          <select id="p-offset_tuning" class="form-control">
+            <option value="">— not set —</option>
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label>Notes / Description</label>
+          <input type="text" id="p-_note" class="form-control" placeholder="Optional human-readable note (stored as _note)" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-profile')">Cancel</button>
+      <button class="btn btn-red" onclick="saveProfile()"><i class="fa fa-save"></i> Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="modal-confirm" onclick="closeModalClick(event,'modal-confirm')">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 id="confirm-title">Confirm</h2>
+      <button class="modal-close" onclick="closeModal('modal-confirm')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-msg">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Cancel</button>
+      <button class="btn btn-red" id="confirm-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
