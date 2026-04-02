@@ -42,16 +42,16 @@ JSON directly:
 
 | Feature | Details |
 |---|---|
-| 📊 **Dashboard** | Live stat cards — device count, profile count, file size, schema version |
-| 📡 **SDR Device Manager** | Add / edit / delete devices with all device-level fields |
-| 📻 **Profile Manager** | Full profile editor with search and per-device filter |
-| ⚙️ **Global Settings** | Receiver name, GPS, waterfall range, FFT size, max clients, audio compression |
-| ✅ **Validation** | Server-side check with error and warning breakdown before export |
-| 📄 **Raw JSON Editor** | View, edit, and apply raw JSON directly with copy-to-clipboard |
-| 📥 **Import** | Upload any existing `settings.json` to continue editing |
-| 📤 **Export** | Download a valid `settings.json` ready to drop into OpenWebRX |
-| ⌨️ **Keyboard Shortcuts** | `Ctrl+S` export · `Ctrl+O` import · `Esc` close modal |
-| 🌙 **Dark Theme** | Pi-hole AdminLTE-inspired dark UI — easy on the eyes at 2 AM |
+| **Dashboard** | Live stat cards — device count, profile count, file size, schema version |
+| **SDR Device Manager** | Add / edit / delete devices with all device-level fields |
+| **Profile Manager** | Full profile editor with search and per-device filter |
+| **Global Settings** | Receiver name, GPS, waterfall range, FFT size, max clients, audio compression |
+| **Validation** | Server-side check with error and warning breakdown before export |
+| **Raw JSON Editor** | View, edit, and apply raw JSON directly with copy-to-clipboard |
+| **Import** | Upload any existing `settings.json` to continue editing |
+| **Export** | Download a valid `settings.json` ready to drop into OpenWebRX |
+| **Keyboard Shortcuts** | `Ctrl+S` export · `Ctrl+O` import · `Esc` close modal |
+| **Dark Theme** | Pi-hole AdminLTE-inspired dark UI — easy on the eyes at 2 AM |
 
 ---
 
