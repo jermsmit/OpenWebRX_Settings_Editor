@@ -42,46 +42,40 @@ JSON directly:
 
 | Feature | Details |
 |---|---|
-| **Dashboard** | Live stat cards — device count, profile count, file size, schema version |
-| **SDR Device Manager** | Add / edit / delete devices with all device-level fields |
-| **Profile Manager** | Full profile editor with search and per-device filter |
-| **Global Settings** | Receiver name, GPS, waterfall range, FFT size, max clients, audio compression |
-| **Validation** | Server-side check with error and warning breakdown before export |
-| **Raw JSON Editor** | View, edit, and apply raw JSON directly with copy-to-clipboard |
-| **Import** | Upload any existing `settings.json` to continue editing |
-| **Export** | Download a valid `settings.json` ready to drop into OpenWebRX |
-| **Keyboard Shortcuts** | `Ctrl+S` export · `Ctrl+O` import · `Esc` close modal |
-| **Dark Theme** | Pi-hole AdminLTE-inspired dark UI — easy on the eyes at 2 AM |
+| 📊 **Dashboard** | Live stat cards — device count, profile count, file size, schema version |
+| 📡 **SDR Device Manager** | Add / edit / delete devices with all device-level fields |
+| 📻 **Profile Manager** | Full profile editor with search and per-device filter |
+| ⚙️ **Global Settings** | Receiver name, GPS, waterfall range, FFT size, max clients, audio compression |
+| ✅ **Validation** | Server-side check with error and warning breakdown before export |
+| 📄 **Raw JSON Editor** | View, edit, and apply raw JSON directly with copy-to-clipboard |
+| 📥 **Import** | Upload any existing `settings.json` to continue editing |
+| 📤 **Export** | Download a valid `settings.json` ready to drop into OpenWebRX |
+| ⌨️ **Keyboard Shortcuts** | `Ctrl+S` export · `Ctrl+O` import · `Esc` close modal |
+| 🌙 **Dark Theme** | Pi-hole AdminLTE-inspired dark UI — easy on the eyes at 2 AM |
 
 ---
 
 ## Screenshots
 
-> **To maintainer:** Add screenshots to `docs/screenshots/` and uncomment the image lines below.
+> 📸 Screenshots coming soon — drop your PNGs into `docs/screenshots/` and they will appear here automatically.
 
 ### Dashboard
-[Dashboard](docs/screenshots/dashboard.png)
-*Dashboard — stat cards, SDR summary, quick actions*
+![Dashboard](docs/screenshots/dashboard.png)
 
 ### SDR Devices
-[SDR Devices](docs/screenshots/devices.png)
-*SDR Devices — add, edit, delete hardware entries*
+![SDR Devices](docs/screenshots/devices.png)
 
 ### Profile Editor
-[Profile Editor](docs/screenshots/profile-editor.png)
-*Profile Editor — full field set including modulation, gain, squelch, direct sampling*
+![Profile Editor](docs/screenshots/profile-editor.png)
 
 ### Global Settings
-[Global Settings](docs/screenshots/global-settings.png)
-*Global Settings — receiver name, GPS coordinates, waterfall levels, FFT size*
+![Global Settings](docs/screenshots/global-settings.png)
 
 ### Validation
-[Validation](docs/screenshots/validate.png)
-*Validation — errors and warnings before export*
+![Validation](docs/screenshots/validate.png)
 
 ### Raw JSON Editor
-[Raw JSON](docs/screenshots/raw-json.png)
-*Raw JSON — view, edit, and apply settings.json directly*
+![Raw JSON](docs/screenshots/raw-json.png)
 
 ---
 
