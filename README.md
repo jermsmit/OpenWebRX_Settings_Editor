@@ -60,27 +60,27 @@ JSON directly:
 > **To maintainer:** Add screenshots to `docs/screenshots/` and uncomment the image lines below.
 
 ### Dashboard
-<!-- ![Dashboard](docs/screenshots/dashboard.png) -->
+[Dashboard](docs/screenshots/dashboard.png)
 *Dashboard — stat cards, SDR summary, quick actions*
 
 ### SDR Devices
-<!-- ![SDR Devices](docs/screenshots/devices.png) -->
+[SDR Devices](docs/screenshots/devices.png)
 *SDR Devices — add, edit, delete hardware entries*
 
 ### Profile Editor
-<!-- ![Profile Editor](docs/screenshots/profile-editor.png) -->
+[Profile Editor](docs/screenshots/profile-editor.png)
 *Profile Editor — full field set including modulation, gain, squelch, direct sampling*
 
 ### Global Settings
-<!-- ![Global Settings](docs/screenshots/global-settings.png) -->
+[Global Settings](docs/screenshots/global-settings.png)
 *Global Settings — receiver name, GPS coordinates, waterfall levels, FFT size*
 
 ### Validation
-<!-- ![Validation](docs/screenshots/validate.png) -->
+[Validation](docs/screenshots/validate.png)
 *Validation — errors and warnings before export*
 
 ### Raw JSON Editor
-<!-- ![Raw JSON](docs/screenshots/raw-json.png) -->
+[Raw JSON](docs/screenshots/raw-json.png)
 *Raw JSON — view, edit, and apply settings.json directly*
 
 ---
